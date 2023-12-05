@@ -7,6 +7,7 @@ TagManager:
   - Enemys
   - Coins
   - Ground
+  - Ladder
   layers:
   - Default
   - TransparentFX
@@ -17,7 +18,7 @@ TagManager:
   - Player
   - Coins
   - Enemy
-  - 
+  - Ladder
   - 
   - 
   - 
