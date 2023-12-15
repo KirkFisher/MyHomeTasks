@@ -6,28 +6,23 @@ using UnityEngine.InputSystem.LowLevel;
 
 public class PlayerController : MonoBehaviour
 {
-    
-    public int _health = 10;  
     public Transform _groundCheck;
     public LayerMask _groundLayer;
     
-
-    private int _currentHealth;
     private bool _isDead = false;
     private bool _isGrounded;
     private bool _isJumping;
     private bool _isRolling = false;
     private bool _facingRight;
-    private bool _isAttacking = false;
     [SerializeField] private float _moveSpeed = 5f;
     [SerializeField] private float _jumpForce = 10f;
     [SerializeField] private float _rollSpeed = 10f;// Скорость кувырка
     [SerializeField] private float _rollDuration = 0.5f; // Продолжительность кувырка
 
 
-    private BoxCollider2D _swordCollider;
+    public Animator _animator;
+    //
     private Rigidbody2D _rb;
-    private Animator _animator;
 
     private void Awake()
     {
@@ -37,9 +32,7 @@ public class PlayerController : MonoBehaviour
     private void Start()
     {
         _animator = GetComponent<Animator>();
-        _swordCollider = GetComponentInChildren<BoxCollider2D>();
-        _swordCollider.enabled = false; // Отключаем BoxCollider2D по умолчанию
-        _currentHealth = _health;
+        
     }
 
     private void Update()
@@ -63,30 +56,9 @@ public class PlayerController : MonoBehaviour
             StartCoroutine(Roll());
         }
 
-        if (Input.GetButtonDown("Fire1") && !_isAttacking)
-        {
-            StartCoroutine(Attack());
-        }
     }
 
-    IEnumerator Attack()
-    {
-        _isAttacking = true;
-        _animator.SetBool("IsAttacking", true);
-
-        // Код атаки, например, активация коллайдера меча
-        _swordCollider.enabled = true;
-
-        // Ждем время анимации атаки
-        yield return new WaitForSeconds(0.5f); // Замените на длительность вашей анимации
-
-        // Выключаем состояние атаки
-        _animator.SetBool("IsAttacking", false);
-        _isAttacking = false;
-
-        // Выключаем коллайдер меча
-        _swordCollider.enabled = false;
-    }
+    
 
     private void Move()
     {
@@ -144,7 +116,7 @@ public class PlayerController : MonoBehaviour
             Vector2 rollMovement = new Vector2(horizontal * _rollSpeed, _rb.velocity.y);
             _rb.velocity = rollMovement;
 
-            if ((horizontal > 0 && _facingRight) || (horizontal < 0 && !_facingRight))
+            if ((horizontal > 0 && !_facingRight) || (horizontal < 0 && _facingRight))
             {
                 Flip();
             }
