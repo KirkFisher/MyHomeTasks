@@ -6,7 +6,7 @@ public class HealthManager : MonoBehaviour
 {
     public Slider healthSlider;
     public float maxHealth = 100f;
-    private float currentHealth;
+    private float currentHealth = 100f;
 
     private void Start()
     {
@@ -32,7 +32,7 @@ public class HealthManager : MonoBehaviour
 
     private void Die()
     {
-        
+        gameObject.SetActive(false);
     }
 
     private void UpdateHealthUI()

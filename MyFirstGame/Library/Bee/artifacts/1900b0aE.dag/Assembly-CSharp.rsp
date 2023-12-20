@@ -429,6 +429,8 @@
 "Assets/Materials/omiStudio/Enemy Cow/Scripts/SetStateAnimation.cs"
 "Assets/NPS/Scripts/Dialogs/Dialog.cs"
 "Assets/NPS/Scripts/Dialogs/DialogManager.cs"
+"Assets/NPS/Scripts/Dialogs/DialogTrigger.cs"
+"Assets/NPS/Scripts/Dialogs/DialogTriggerButton.cs"
 "Assets/NPS/Scripts/NPSManager.cs"
 "Assets/Player/Scripts/AttackAnimation.cs"
 "Assets/Player/Scripts/AttackController.cs"
@@ -438,6 +440,7 @@
 "Assets/Scripts/CameraController.cs"
 "Assets/Scripts/HealthManager.cs"
 "Assets/Scripts/Ladder.cs"
+"Assets/Scripts/MainMenu/MainMenu.cs"
 "Assets/Scripts/Parallax.cs"
 -langversion:9.0
 

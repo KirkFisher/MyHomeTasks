@@ -18,6 +18,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float _jumpForce = 10f;
     [SerializeField] private float _rollSpeed = 10f;// Скорость кувырка
     [SerializeField] private float _rollDuration = 0.5f; // Продолжительность кувырка
+    [SerializeField] private Transform playerModelTransform;
 
 
     public Animator _animator;
@@ -99,7 +100,7 @@ public class PlayerController : MonoBehaviour
     private void Flip()
     {
         _facingRight = !_facingRight;
-        Vector3 scale = transform.localScale;
+        Vector3 scale = playerModelTransform.localScale;
         scale.x *= -1;
         transform.localScale = scale;
     }
