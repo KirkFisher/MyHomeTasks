@@ -8,12 +8,16 @@ public class PlayerController : MonoBehaviour
 {
     public Transform _groundCheck;
     public LayerMask _groundLayer;
+
     
+    private Finish _finish;
+    private bool _isFinish;
     private bool _isDead = false;
     private bool _isGrounded;
     private bool _isJumping;
     private bool _isRolling = false;
     private bool _facingRight;
+    private int myCoins = CoinsText.Coins;
     [SerializeField] private float _moveSpeed = 5f;
     [SerializeField] private float _jumpForce = 10f;
     [SerializeField] private float _rollSpeed = 10f;// Скорость кувырка
@@ -22,18 +26,17 @@ public class PlayerController : MonoBehaviour
 
 
     public Animator _animator;
-    //
     private Rigidbody2D _rb;
 
     private void Awake()
     {
         _rb = GetComponent<Rigidbody2D>();
+        _animator = GetComponent<Animator>();
     }
 
     private void Start()
     {
-        _animator = GetComponent<Animator>();
-        
+        _finish = GameObject.FindGameObjectWithTag("Finish").GetComponent<Finish>();
     }
 
     private void Update()
@@ -57,6 +60,7 @@ public class PlayerController : MonoBehaviour
             StartCoroutine(Roll());
         }
 
+        Finish();
     }
 
     
@@ -89,12 +93,19 @@ public class PlayerController : MonoBehaviour
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        Debug.Log("PEW");
+        
         // Обработка касания земли после прыжка
         if (collision.gameObject.CompareTag("Ground"))
         {
             _animator.SetBool("Jump", false);
         }
+
+        if (collision.gameObject.CompareTag("Coins"))
+        {
+            CoinsText.Coins += 1;
+            Destroy(gameObject);
+        }
+
     }
 
     private void Flip()
@@ -128,5 +139,29 @@ public class PlayerController : MonoBehaviour
 
         _isRolling = false;
         _animator.SetBool("Rolling", false);
+    }
+
+    private void Finish()
+    {
+        if(Input.GetKeyDown(KeyCode.F) && _isFinish)
+        {
+            _finish.FinishLevel();
+        }
+    }
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.CompareTag("Finish"))
+        {
+            Debug.Log("Finish");
+            _isFinish = true;
+        }
+    }
+    private void OnTriggerExit2D(Collider2D collision)
+    {
+        if (collision.CompareTag("Finish"))
+        {
+            Debug.Log("Finish exit");
+            _isFinish = false;
+        }
     }
 }

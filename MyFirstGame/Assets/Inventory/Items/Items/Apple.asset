@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dd6fde577261067428eceddd8b008dd3, type: 3}
+  m_Name: Apple
+  m_EditorClassIdentifier: 
+  Id: 0
+  uiDisplay: {fileID: 21300000, guid: da7129ed6a246f048a49d8d97de2d2d4, type: 3}
+  type: 0
+  itemPrice: 1
+  Description: "\u0412\u043A\u0443\u0441\u043D\u043E\u0435, \u0441\u043F\u0435\u043B\u043E\u0435.
+    \u041F\u0430\u043B\u044C\u0447\u0438\u043A\u0438 \u043E\u0431\u043B\u0438\u0436\u0435\u0448\u044C..."
+  buff:
+  - attributes: 0
+    Value: 12
+    Max: 15
+    Min: 9

@@ -40,7 +40,7 @@ public class AttackController : MonoBehaviour
         _isAttacking = true;
         _animator.SetTrigger("IsAttack");
 
-        // Код атаки, например, активация коллайдера меча
+        // Код атаки, активация коллайдера меча
         _swordCollider.enabled = true;
 
         // Ждем время анимации атаки

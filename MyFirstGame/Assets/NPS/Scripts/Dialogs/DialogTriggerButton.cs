@@ -13,7 +13,7 @@ public class DialogTriggerButton : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        Debug.Log("Trigger Enter: " + other.gameObject.name);
+        //Debug.Log("Trigger Enter: " + other.gameObject.name);
 
         if (other.CompareTag("Player"))
         {
@@ -29,18 +29,19 @@ public class DialogTriggerButton : MonoBehaviour
                 if (startDialogButton != null)
                 {
                     startDialogButton.gameObject.SetActive(true);
-                }
+                }/*
                 else
                 {
                     Debug.LogError("StartDialogButton is not assigned!");
                 }
+                */
             }
         }
     }
 
     private void OnTriggerExit2D(Collider2D other)
     {
-        Debug.Log("Trigger Exit: " + other.gameObject.name);
+        //Debug.Log("Trigger Exit: " + other.gameObject.name);
 
         if (other.CompareTag("Player"))
         {
@@ -53,14 +54,14 @@ public class DialogTriggerButton : MonoBehaviour
                     animator.SetBool("withNPS", false);
                 }
 
-                if (startDialogButton != null)
+                if (startDialogButton = null)
                 {
                     startDialogButton.gameObject.SetActive(false);
-                }
+                }/*
                 else
                 {
                     Debug.LogError("StartDialogButton is not assigned!");
-                }
+                }*/
             }
         }
     }

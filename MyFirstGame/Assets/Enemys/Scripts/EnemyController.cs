@@ -10,6 +10,7 @@ public class EnemyController : MonoBehaviour
     [SerializeField] private float _timeToWait = 5f;
     [SerializeField] private float minDistanseToPlayer = 1.5f;
     [SerializeField] private float timeToChase = 3f;
+    [SerializeField] private Transform enemyModelTransform;
 
     private Rigidbody2D _rb;
     private Transform _playerTransform;
@@ -17,6 +18,7 @@ public class EnemyController : MonoBehaviour
     private Vector2 _positionA;
     private Vector2 _positionB;
     private Animator _animator;
+    private EnemyAttack _enemyAttack;
 
     private bool _isChaisingPlayer;
     private bool _isFacingRight = true;
@@ -49,7 +51,9 @@ public class EnemyController : MonoBehaviour
         _chaseTime = timeToChase;
         _walkSpeed = _patrolSpeed;
 
-        _animator = GetComponent<Animator>();   
+        _animator = GetComponent<Animator>();
+
+        _enemyAttack = GetComponent<EnemyAttack>();
     }
 
     private void Update()
@@ -66,6 +70,8 @@ public class EnemyController : MonoBehaviour
         
         if (ShouldWait())
         {
+
+            _animator.SetBool("Movement", false);
             _isWait = true;
         }
     }
@@ -79,6 +85,10 @@ public class EnemyController : MonoBehaviour
         if (_isChaisingPlayer)
         {
             ChasePlayer();
+            if (_enemyAttack != null)
+            {
+                _enemyAttack.EnableSwordCollider();
+            }
         }
 
         if (!_isWait && !_isChaisingPlayer)
@@ -145,12 +155,13 @@ public class EnemyController : MonoBehaviour
         }
 
         _rb.MovePosition((Vector2)transform.position + _nextPoint);
+        _animator.SetBool("Movement", true);
     }
 
     private void Flip()
     {
         _isFacingRight = !_isFacingRight;
-        Vector3 scale = transform.localScale;
+        Vector3 scale = enemyModelTransform.localScale;
         scale.x *= -1;
         transform.localScale = scale;
     }

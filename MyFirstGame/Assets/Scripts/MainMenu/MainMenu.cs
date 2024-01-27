@@ -12,6 +12,7 @@ public class MainMenu : MonoBehaviour
     public void StartHandler()
     {
         SceneManager.LoadScene(1);
+        Time.timeScale = 1.0f;
     }
 
     public void ExitHandler()

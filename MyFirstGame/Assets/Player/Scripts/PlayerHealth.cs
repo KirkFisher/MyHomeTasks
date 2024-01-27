@@ -7,6 +7,7 @@ public class PlayerHealth : MonoBehaviour
 {
     public Slider healthSlider;
 
+    [SerializeField] private GameObject gameOverCanvas;
     [SerializeField]private float health = 100f;
     private float maxHealth = 100f;
 
@@ -38,6 +39,8 @@ public class PlayerHealth : MonoBehaviour
     private void Die()
     {
         gameObject.SetActive(false);
+        gameOverCanvas.SetActive(true);
+        animator.SetBool("isDead", true);
     }
     private void UpdateHealthUI()
     {
