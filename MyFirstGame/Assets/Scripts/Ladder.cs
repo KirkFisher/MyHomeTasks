@@ -1,28 +1,21 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class Ladder : MonoBehaviour
 {
-    private Vector2 _vertMove;
-
-    [SerializeField] private float _speed = 5;
+    [SerializeField] private float climbSpeed = 5f;
 
     private void OnTriggerStay2D(Collider2D other)
     {
-        if (other.gameObject.CompareTag("Player"))
+        if (other.CompareTag("Player"))
         {
-            if (Input.GetKey(KeyCode.W))
-            {
-                other.GetComponent<Rigidbody2D>().velocity = new Vector2(0, _speed);
-            }
-        } else if (Input.GetKey(KeyCode.S))
-        {
-            other.GetComponent<Rigidbody2D>().velocity = new Vector2(0, -_speed);
+            float verticalInput = Input.GetAxisRaw("Vertical");
+            MovePlayer(other.gameObject.GetComponent<Rigidbody2D>(), verticalInput);
         }
-        else
-        {
-            other.GetComponent<Rigidbody2D>().velocity = new Vector2(0, 0);
-        }
+    }
+
+    private void MovePlayer(Rigidbody2D rb, float verticalInput)
+    {
+        Vector2 verticalMovement = new Vector2(0, verticalInput * climbSpeed);
+        rb.velocity = verticalMovement;
     }
 }

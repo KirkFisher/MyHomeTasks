@@ -29,12 +29,7 @@ public class DialogTriggerButton : MonoBehaviour
                 if (startDialogButton != null)
                 {
                     startDialogButton.gameObject.SetActive(true);
-                }/*
-                else
-                {
-                    Debug.LogError("StartDialogButton is not assigned!");
                 }
-                */
             }
         }
     }

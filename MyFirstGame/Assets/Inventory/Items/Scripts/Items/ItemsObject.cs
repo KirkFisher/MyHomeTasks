@@ -7,7 +7,8 @@ public enum ItemType
     Equpment,
     Weapon,
     Default,
-    KeyMap
+    KeyMap,
+    Potion
 }
 
 public enum Attributes
@@ -39,8 +40,8 @@ public class Item
 {
     public string Name;
     public int Id;
-    public int itemPrice;
     public ItemBuff[] buff;
+    public ItemType type;
 
     public Item(ItemsObject item)
     {
@@ -53,6 +54,47 @@ public class Item
             {
                 attributes = item.buff[i].attributes
             };
+        }
+        type = item.type;
+    }
+
+    public virtual void Use(PlayerHealth player)
+    {
+        if (type == ItemType.Potion && player != null)
+        {
+            if (buff.Length > 0)
+                player.ApplyBuff(buff[0]);
+            else
+                Debug.LogWarning("No buffs found for potion: " + Name);
+        }
+        else
+        {
+            Debug.LogWarning("This item cannot be used in the current context.");
+        }
+    }
+}
+
+[System.Serializable]
+public class Potion : Item
+{
+    public Potion(ItemsObject item) : base(item) { }
+
+    public override void Use(PlayerHealth player)
+    {
+        foreach (var buff in buff)
+            ApplyBuff(player, buff);
+    }
+
+    private void ApplyBuff(PlayerHealth player, ItemBuff buff)
+    {
+        switch (buff.attributes)
+        {
+            case Attributes.Health:
+                player.Heal(buff.Value);
+                break;
+            case Attributes.Stamina:
+                // Применение бонуса к стамине игрока
+                break;
         }
     }
 }

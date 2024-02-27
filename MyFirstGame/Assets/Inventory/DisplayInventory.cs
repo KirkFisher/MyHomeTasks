@@ -32,10 +32,9 @@ public class DisplayInventory : MonoBehaviour
 
     public void CreateSlots()
     {
-        ItemsDisplayed = new Dictionary<GameObject, InventorySlot> ();
-        for(int i = 0; i < Inventory.Container.Items.Length; i++)
+        ItemsDisplayed = new Dictionary<GameObject, InventorySlot>();
+        for (int i = 0; i < Inventory.Container.Items.Length; i++)
         {
-            Debug.Log("Creating slot: " + i);
             var obj = Instantiate(InventoryPrefab, Vector2.zero, Quaternion.identity, transform);
             obj.GetComponent<RectTransform>().localPosition = GetPosition(i);
 
@@ -45,26 +44,61 @@ public class DisplayInventory : MonoBehaviour
             AddEvent(obj, EventTriggerType.BeginDrag, delegate { OnDragBegin(obj); });
             AddEvent(obj, EventTriggerType.EndDrag, delegate { OnDragEnd(obj); });
             AddEvent(obj, EventTriggerType.Drag, delegate { OnDraged(obj); });
+            // Добавляем обработчик события двойного щелчка мыши только один раз
+            AddDoubleClickHandler(obj);
 
             ItemsDisplayed.Add(obj, Inventory.Container.Items[i]);
         }
     }
 
+    private void AddDoubleClickHandler(GameObject obj)
+    {
+        EventTrigger trigger = obj.GetComponent<EventTrigger>();
+        if (trigger == null)
+        {
+            trigger = obj.AddComponent<EventTrigger>();
+        }
+
+        // Добавляем обработчик события для двойного щелчка мышью
+        EventTrigger.Entry doubleClickEntry = new EventTrigger.Entry();
+        doubleClickEntry.eventID = EventTriggerType.PointerClick;
+        doubleClickEntry.callback.AddListener((eventData) =>
+        {
+            PointerEventData ped = eventData as PointerEventData;
+            if (ped.clickCount == 2) // Проверяем, что это был двойной щелчок
+            {
+                OnSlotDoubleClick(obj);
+            }
+        });
+        trigger.triggers.Add(doubleClickEntry);
+    }
+
+    private void OnSlotDoubleClick(GameObject obj)
+    {
+        if (ItemsDisplayed.TryGetValue(obj, out InventorySlot slot))
+        {
+            if (slot.item != null && slot.item.type == ItemType.Potion)
+            {
+                slot.item.Use(PlayerHealth.Instance);
+                Inventory.RemoveItem(slot.item);
+            }
+        }
+    }
+
     public void UpdateSlot()
     {
-        foreach(KeyValuePair<GameObject, InventorySlot> _slot in ItemsDisplayed)
+        foreach (KeyValuePair<GameObject, InventorySlot> _slot in ItemsDisplayed)
         {
-            if(_slot.Value.ID >= 0)
+            if (_slot.Value.ID >= 0)
             {
-                Debug.Log("Updating Slot - ID: " + _slot.Value.ID + ", Item ID: " + _slot.Value.item.Id);
-                _slot.Key.transform.GetChild(0).GetComponentInChildren<Image>().sprite = 
+                _slot.Key.transform.GetChild(0).GetComponentInChildren<Image>().sprite =
                     Inventory.database.GetItem[_slot.Value.item.Id].uiDisplay;
                 //_slot.Key.transform.GetChild(0).GetComponentInChildren<Image>().color = Color.white;
-                _slot.Key.GetComponentInChildren<TextMeshProUGUI>().text =
-                    _slot.Value.ammount == 1 ? "" : _slot.Value.ammount.ToString("n0");
-            } else
+                TextMeshProUGUI textComponent = _slot.Key.GetComponentInChildren<TextMeshProUGUI>();
+                textComponent.text = _slot.Value.ammount > 1 ? _slot.Value.ammount.ToString("n0") : "";
+            }
+            else
             {
-                Debug.Log("Updating Slot - Empty");
                 _slot.Key.transform.GetChild(0).GetComponentInChildren<Image>().sprite = null;
                 //_slot.Key.transform.GetChild(0).GetComponentInChildren<Image>().color = Color.green;
                 _slot.Key.GetComponentInChildren<TextMeshProUGUI>().text = "";
@@ -74,7 +108,7 @@ public class DisplayInventory : MonoBehaviour
 
     private void OnDraged(GameObject obj)
     {
-       if(mouseItem.obj != null)
+        if (mouseItem.obj != null)
         {
             mouseItem.obj.GetComponent<RectTransform>().position = Input.mousePosition;
         }
@@ -84,11 +118,10 @@ public class DisplayInventory : MonoBehaviour
     {
         if (mouseItem.hoverObj)
         {
-            Debug.Log("OnDragEnd: Moving item");
             Inventory.MoveItem(ItemsDisplayed[obj], ItemsDisplayed[mouseItem.hoverObj]);
-        } else
+        }
+        else
         {
-            Debug.Log("OnDragEnd: Removing item");
             Inventory.RemoveItem(ItemsDisplayed[obj].item);
         }
         Destroy(mouseItem.obj);
@@ -97,7 +130,6 @@ public class DisplayInventory : MonoBehaviour
 
     private void OnDragBegin(GameObject obj)
     {
-        Debug.Log("OnDragBegin");
         var mouseObject = new GameObject();
         var rt = mouseObject.AddComponent<RectTransform>();
         rt.sizeDelta = new Vector2(50, 50);
@@ -105,7 +137,6 @@ public class DisplayInventory : MonoBehaviour
         Debug.Log(ItemsDisplayed[obj].item.Name);
         if (ItemsDisplayed[obj].ID >= 0)
         {
-            Debug.Log("OnDragBegin1");
             var img = mouseObject.AddComponent<Image>();
             img.sprite = Inventory.database.GetItem[ItemsDisplayed[obj].ID].uiDisplay;
             img.raycastTarget = false;
@@ -140,15 +171,15 @@ public class DisplayInventory : MonoBehaviour
     private Vector3 GetPosition(int i)
     {
         return new Vector3(X_START + (X_SPACE_ITEM * (i % NUMBER_OF_COLUMN)),
-             Y_START+(-Y_SPACE_ITEM * (i / NUMBER_OF_COLUMN)),0);
-   
+             Y_START + (-Y_SPACE_ITEM * (i / NUMBER_OF_COLUMN)), 0);
+
     }
 }
 
 public class MouseItem
 {
-   public GameObject obj;
-   public InventorySlot item;
-   public InventorySlot hoverItem;
-   public GameObject hoverObj;
+    public GameObject obj;
+    public InventorySlot item;
+    public InventorySlot hoverItem;
+    public GameObject hoverObj;
 }

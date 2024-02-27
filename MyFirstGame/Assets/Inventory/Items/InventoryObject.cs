@@ -1,6 +1,5 @@
 using UnityEngine;
-[CreateAssetMenu(fileName = "New Inventory", menuName = "Inventory System/ Inventory")]
-
+[CreateAssetMenu(fileName = "New Inventory", menuName = "Inventory System/Inventory")]
 public class InventoryObject : ScriptableObject
 {
     public ItemDataBaseObject database;
@@ -21,13 +20,22 @@ public class InventoryObject : ScriptableObject
 
     public void RemoveItem(Item item)
     {
+        int index = -1;
         for (int i = 0; i < Container.Items.Length; i++)
         {
             if (Container.Items[i].item == item)
             {
-                Container.Items[i].UpdateSlot(-1, null, 0);
-                
+                index = i;
+                break;
             }
+        }
+
+        if (index != -1)
+        {
+            if (Container.Items[index].ammount > 1)
+                Container.Items[index].AddAmount(-1);
+            else
+                Container.Items[index].UpdateSlot(-1, null, 0);
         }
     }
 
@@ -36,13 +44,24 @@ public class InventoryObject : ScriptableObject
         InventorySlot temp = new InventorySlot(item2.ID, item2.item, item2.ammount);
         item2.UpdateSlot(item1.ID, item1.item, item1.ammount);
         item1.UpdateSlot(temp.ID, temp.item, temp.ammount);
-        Debug.Log(item1.ID + " MoveItem v InvObj");
-        Debug.Log(item2.ID + " MoveItem v InvObj");
+    }
+
+    
+    // Метод для получения количества монет
+    public int GetCoins()
+    {
+        return CoinsText.Coins;
+    }
+
+    // Метод для установки количества монет
+    public void SetCoins(int amount)
+    {
+        CoinsText.Coins = amount;
     }
 
     public InventorySlot SetEmptySlot(Item item, int amount)
     {
-        for(int i = 0;i < Container.Items.Length; i++)
+        for (int i = 0; i < Container.Items.Length; i++)
         {
             if (Container.Items[i].ID <= -1)
             {
@@ -50,17 +69,20 @@ public class InventoryObject : ScriptableObject
                 return Container.Items[i];
             }
         }
-
         return null;
     }
 
+    public void UsePotion(PlayerHealth player, PotionObject potion)
+    {
+        potion.Use(player);
+    }
 }
+
 [System.Serializable]
 public class Inventory
 {
     public InventorySlot[] Items = new InventorySlot[10];
 }
-
 
 [System.Serializable]
 public class InventorySlot
@@ -77,12 +99,12 @@ public class InventorySlot
     }
     public InventorySlot(int _id, Item _item, int _ammount)
     {
-        ID= _id;
+        ID = _id;
         item = _item;
         ammount = _ammount;
     }
 
-    public void UpdateSlot(int _id, Item _item,int _ammount)
+    public void UpdateSlot(int _id, Item _item, int _ammount)
     {
         ID = _id;
         item = _item;
@@ -93,5 +115,4 @@ public class InventorySlot
     {
         ammount += value;
     }
-
 }

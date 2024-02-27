@@ -11,18 +11,25 @@ public class PlayerController : MonoBehaviour
 
     
     private Finish _finish;
+    private LeverArm _arm;
+    
     private bool _isFinish;
     private bool _isDead = false;
     private bool _isGrounded;
     private bool _isJumping;
     private bool _isRolling = false;
     private bool _facingRight;
-    private int myCoins = CoinsText.Coins;
+    private bool isLeverArm = false;
+    private int Coins = CoinsText.Coins;
     [SerializeField] private float _moveSpeed = 5f;
     [SerializeField] private float _jumpForce = 10f;
     [SerializeField] private float _rollSpeed = 10f;// Скорость кувырка
     [SerializeField] private float _rollDuration = 0.5f; // Продолжительность кувырка
     [SerializeField] private Transform playerModelTransform;
+    [SerializeField] private AudioSource jumpSound;
+    [SerializeField] private float interactionDistance = 2f; // Adjust this value as needed
+    [SerializeField] private LayerMask interactionLayerMask;
+    [SerializeField] private PlayerInventory _playerInventory;
 
 
     public Animator _animator;
@@ -37,6 +44,7 @@ public class PlayerController : MonoBehaviour
     private void Start()
     {
         _finish = GameObject.FindGameObjectWithTag("Finish").GetComponent<Finish>();
+        _arm = FindObjectOfType<LeverArm>();
     }
 
     private void Update()
@@ -46,10 +54,12 @@ public class PlayerController : MonoBehaviour
 
         Move();
 
-        if (Input.GetButtonDown("Jump") && _isGrounded)
+        bool inventoryActive = _playerInventory.isOpen;
+        if (Input.GetButtonDown("Jump") && _isGrounded && !inventoryActive)
         {
-            Debug.Log("PAW");
+            Debug.Log("Jump!");
             _isJumping = true;
+            jumpSound.Play();
             _animator.SetBool("Jump", true);
             Jump();
         }
@@ -61,6 +71,8 @@ public class PlayerController : MonoBehaviour
         }
 
         Finish();
+
+        StartDialogTrigger();
     }
 
     
@@ -116,6 +128,22 @@ public class PlayerController : MonoBehaviour
         transform.localScale = scale;
     }
 
+    private void StartDialogTrigger()
+    {
+        if (Input.GetKeyDown(KeyCode.F))
+        {
+            RaycastHit2D hit = Physics2D.Raycast(transform.position, Vector2.right, interactionDistance, interactionLayerMask);
+            if (hit.collider != null)
+            {
+                NPCController npc = hit.collider.GetComponent<NPCController>();
+                if (npc != null)
+                {
+                    npc.TriggerDialog();
+                }
+            }
+        }
+    }
+
     private IEnumerator Roll()
     {
         _isRolling = true;
@@ -147,21 +175,35 @@ public class PlayerController : MonoBehaviour
         {
             _finish.FinishLevel();
         }
+        if(Input.GetKeyDown(KeyCode.F) && isLeverArm)
+        {
+            _arm.ActivateLeverArm();
+        }
     }
     private void OnTriggerEnter2D(Collider2D collision)
     {
+        LeverArm leverArm = collision.GetComponent<LeverArm>();
         if (collision.CompareTag("Finish"))
         {
             Debug.Log("Finish");
             _isFinish = true;
         }
+        if (leverArm != null)
+        {
+            isLeverArm = true;
+        }
     }
     private void OnTriggerExit2D(Collider2D collision)
     {
+        LeverArm leverArm = collision.GetComponent<LeverArm>();
         if (collision.CompareTag("Finish"))
         {
             Debug.Log("Finish exit");
             _isFinish = false;
+        }
+        if (leverArm = null)
+        {
+            isLeverArm = false;
         }
     }
 }

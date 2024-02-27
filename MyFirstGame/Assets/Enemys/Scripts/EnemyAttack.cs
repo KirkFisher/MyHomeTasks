@@ -6,13 +6,14 @@ public class EnemyAttack : MonoBehaviour
 {
     [SerializeField] private float damage = 10f;
     [SerializeField] private float timeToDamage = 1f;
-
-    [SerializeField]private Animator _animator;
+    [SerializeField] private AudioSource enemyHittingSound;
+    [SerializeField] private Animator _animator;
 
     private float _damageTime;
     private bool _isDamage;
 
     private BoxCollider2D _swordCollider;
+
     private void Start()
     {
         _animator = GetComponent<Animator>();
@@ -27,13 +28,14 @@ public class EnemyAttack : MonoBehaviour
         if (!_isDamage)
         {
             _damageTime -= Time.deltaTime;
-            if(_damageTime <= 0)
+            if (_damageTime <= 0)
             {
                 _isDamage = true;
                 _damageTime = timeToDamage;
             }
         }
     }
+
     private void OnTriggerEnter2D(Collider2D other)
     {
         PlayerHealth playerHealth = other.gameObject.GetComponent<PlayerHealth>();
@@ -41,27 +43,29 @@ public class EnemyAttack : MonoBehaviour
         if (playerHealth != null && _isDamage)
         {
             _animator.SetTrigger("isAttack");
+            enemyHittingSound.Play();
             playerHealth.ReduceHealth(damage);
             _isDamage = false;
-            // Запускаем корутину для отключения и включения коллайдера
-            //StartCoroutine(DisableEnableCollider());
-
+            Debug.Log("1");
+            // Включаем коллайдер на короткое время
             EnableSwordCollider();
+
+            // Вызываем метод для выключения коллайдера через 1 секунду
+            Invoke("DisableSwordCollider", 1f);
+
+            // Сбрасываем таймер атаки
+            _damageTime = timeToDamage;
         }
     }
-    public void EnableSwordCollider()
-    {
-        StartCoroutine(DisableEnableCollider());
-    }
 
-    private IEnumerator DisableEnableCollider()
+    public void EnableSwordCollider()
     {
         // Включаем коллайдер
         _swordCollider.enabled = true;
+    }
 
-        // Ждем 0.5 секунды
-        yield return new WaitForSeconds(3f);
-
+    private void DisableSwordCollider()
+    {
         // Отключаем коллайдер
         _swordCollider.enabled = false;
     }

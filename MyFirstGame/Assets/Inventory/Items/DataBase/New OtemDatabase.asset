@@ -13,10 +13,12 @@ MonoBehaviour:
   m_Name: New OtemDatabase
   m_EditorClassIdentifier: 
   Items:
-  - {fileID: 11400000, guid: 9cd4691ab06b5c54b837726dd3e322e3, type: 2}
+  - {fileID: 11400000, guid: 189edbdb11b6a7a4ba1234e9c394baa0, type: 2}
   - {fileID: 11400000, guid: 329e0fe832c4dfa4ab19af2938450a40, type: 2}
   - {fileID: 11400000, guid: 7af3ad68a1f2cfc4bbe6d35fd78ecfba, type: 2}
   - {fileID: 11400000, guid: fde957b0542054f43b1714cf7ea8c02b, type: 2}
   - {fileID: 11400000, guid: 8bd4c619f1c4822489be2f4d77bd3889, type: 2}
   - {fileID: 11400000, guid: 78107827f206a6643ace3916589b64e9, type: 2}
   - {fileID: 11400000, guid: 02283264db0772246944e8ca470c6032, type: 2}
+  - {fileID: 11400000, guid: ff678b90b5b8a624f8a1ed5e23710189, type: 2}
+  - {fileID: 11400000, guid: fee4912be5ce8c8479db1082749ff6a5, type: 2}

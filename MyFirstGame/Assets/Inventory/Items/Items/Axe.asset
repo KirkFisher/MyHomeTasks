@@ -17,4 +17,8 @@ MonoBehaviour:
   type: 2
   itemPrice: 5
   Description: 
-  buff: []
+  buff:
+  - attributes: 2
+    Value: 10
+    Max: 15
+    Min: 6

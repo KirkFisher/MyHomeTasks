@@ -5,7 +5,6 @@ using UnityEngine;
 public class EnemyVision : MonoBehaviour
 {
     [SerializeField] private GameObject currentHitObject;
-    
     [SerializeField] private float circleRadius;
     [SerializeField] private float maxDistance;
     [SerializeField] private LayerMask layerMask;
